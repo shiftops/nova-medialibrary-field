@@ -50,6 +50,7 @@ class FieldServiceProvider extends ServiceProvider
                 Route::get('{resource}/{resourceId}/media/{field}', Http\Controllers\IndexController::class);
                 Route::get('{resource}/{resourceId}/media/{field}/attachable', Http\Controllers\AttachableController::class);
                 Route::post('{resource}/{resourceId}/media/{field}', Http\Controllers\AttachController::class);
+                Route::post('{resource}/{resourceId}/media/{field}/dropbox-upload', Http\Controllers\DropboxUploadController::class);
             });
     }
 

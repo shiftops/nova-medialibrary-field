@@ -1,17 +1,17 @@
 <template>
   <div>
     <input
-      v-if="showFileInput"
-      :id="'input' + _uid"
-      :accept="context.field.accept"
-      :multiple="!context.field.single"
-      type="file"
-      class="form-file-input"
-      @change="processFiles"
+        v-if="showFileInput"
+        :id="'input' + _uid"
+        :accept="context.field.accept"
+        :multiple="!context.field.single"
+        type="file"
+        class="form-file-input"
+        @change="processFiles"
     >
 
     <div class="mt-2 mb-3">
-      <MediaUploadingList :media="media" />
+      <MediaUploadingList :media="media"/>
       <p v-if="validationFailed" class="text-danger text-sm mt-3">
         {{ __('Validation failed. Hover media to see details.') }}
       </p>
@@ -21,9 +21,12 @@
       {{ chooseButtonText }}
     </label>
 
-    <button v-if="attachExistingButtonVisible" type="button" class="btn btn-default btn-primary ml-3" @click="attachExisting">
+    <button v-if="attachExistingButtonVisible" type="button" class="btn btn-default btn-primary ml-3"
+            @click="attachExisting">
       {{ __('Use existing') }}
     </button>
+
+    <dropbox-upload @uploaded="attachExistingFromDropbox"></dropbox-upload>
 
     <progress-button v-if="mediaToUpload.length" class="ml-3" @click.native="upload">
       {{ __('Upload') }}
@@ -31,11 +34,11 @@
 
     <portal v-if="chooseExistingMediaModalOpen" to="modals">
       <ChooseExistingMediaModal
-        :field="context.field"
-        :resource-id="context.resourceId"
-        :resource-name="context.resourceName"
-        @close="closeChooseExistingMediaModal"
-        @choose="addChosenMedia"
+          :field="context.field"
+          :resource-id="context.resourceId"
+          :resource-name="context.resourceName"
+          @close="closeChooseExistingMediaModal"
+          @choose="addChosenMedia"
       />
     </portal>
   </div>
@@ -46,18 +49,20 @@ import { UploadingFile, UploadingExistingMedia } from './UploadingMedia'
 import MediaUploadingList from './MediaUploadingList'
 import { context } from './Context'
 import ChooseExistingMediaModal from './Modals/ChooseExistingMedia'
+import DropboxUpload from './DropboxUpload'
 
 export default {
   components: {
     ChooseExistingMediaModal,
     MediaUploadingList,
+    DropboxUpload
   },
 
   inject: {
     context,
   },
 
-  data() {
+  data () {
     return {
       chooseExistingMediaModalOpen: false,
       showFileInput: true,
@@ -66,11 +71,11 @@ export default {
   },
 
   computed: {
-    mediaToUpload() {
+    mediaToUpload () {
       return this.media.filter(media => !media.uploading)
     },
 
-    chooseButtonText() {
+    chooseButtonText () {
       if (this.context.media.length && this.context.field.single) {
         return this.__('Replace File')
       } else if (this.context.field.single) {
@@ -80,29 +85,29 @@ export default {
       }
     },
 
-    attachExistingButtonVisible() {
+    attachExistingButtonVisible () {
       return this.context.field.attachExisting
     },
 
-    synchronousUploading() {
+    synchronousUploading () {
       return this.context.field.synchronousUploading
     },
 
-    validationFailed() {
+    validationFailed () {
       return this.media.some(media => media.validationErrors.has('file'))
     },
   },
 
-  created() {
+  created () {
     Nova.$on(`nova-medialibrary-field:attach:${this.context.field.attribute}`, this.addMediaItems)
   },
 
-  beforeDestroy() {
+  beforeDestroy () {
     Nova.$on(`nova-medialibrary-field:attach:${this.context.field.attribute}`, this.addMediaItems)
   },
 
   methods: {
-    processFiles(event) {
+    processFiles (event) {
       [...event.target.files].forEach(file => {
         this.addMedia(UploadingFile.create(file))
       })
@@ -113,7 +118,7 @@ export default {
       this.autoupload()
     },
 
-    addMedia(media) {
+    addMedia (media) {
       if (this.validationFails(media)) {
         return
       }
@@ -127,11 +132,11 @@ export default {
       this.media.push(media)
     },
 
-    removeMedia({ id }) {
+    removeMedia ({ id }) {
       this.media = this.media.filter(media => media.id !== id)
     },
 
-    validationFails(media) {
+    validationFails (media) {
       const { field } = this.context
 
       if (!media.hasValidSize(field)) {
@@ -145,21 +150,21 @@ export default {
       return false
     },
 
-    attachExisting() {
+    attachExisting () {
       this.chooseExistingMediaModalOpen = true
     },
 
-    closeChooseExistingMediaModal() {
+    closeChooseExistingMediaModal () {
       this.chooseExistingMediaModalOpen = false
     },
 
-    addChosenMedia(mediaItems) {
+    addChosenMedia (mediaItems) {
       this.closeChooseExistingMediaModal()
 
       this.addMediaItems(mediaItems)
     },
 
-    addMediaItems(mediaItems) {
+    addMediaItems (mediaItems) {
       mediaItems.forEach(media => {
         this.addMedia(UploadingExistingMedia.create(media))
       })
@@ -167,16 +172,15 @@ export default {
       this.autoupload()
     },
 
-    autoupload() {
+    autoupload () {
       if (this.context.field.autouploading) {
         this.upload()
       }
     },
 
-    async upload() {
+    async upload () {
       const { attribute, value } = this.context.field
       const { resourceName, resourceId } = this.context
-
 
       for (const media of this.mediaToUpload) {
         const formData = new FormData()
@@ -192,10 +196,10 @@ export default {
         media.uploading = true
 
         const uploadingPromise = Nova
-          .request()
-          .post(`/nova-vendor/dmitrybubyakin/nova-medialibrary-field/${resourceName}/${resourceId}/media/${attribute}`, formData, options)
-          .then(() => this.handleUploadSucceeded(media))
-          .catch(error => this.handleUploadFailed(media, error))
+            .request()
+            .post(`/nova-vendor/dmitrybubyakin/nova-medialibrary-field/${resourceName}/${resourceId}/media/${attribute}`, formData, options)
+            .then(() => this.handleUploadSucceeded(media))
+            .catch(error => this.handleUploadFailed(media, error))
 
         if (this.synchronousUploading) {
           await uploadingPromise
@@ -203,13 +207,13 @@ export default {
       }
     },
 
-    handleUploadSucceeded(media) {
+    handleUploadSucceeded (media) {
       Nova.$emit(`nova-medialibrary-field:refresh:${this.context.field.attribute}`, () => {
         media.remove()
       })
     },
 
-    handleUploadFailed(media, error) {
+    handleUploadFailed (media, error) {
       media.handleUploadFailed(error)
 
       if (media.validationErrors.has('file')) {

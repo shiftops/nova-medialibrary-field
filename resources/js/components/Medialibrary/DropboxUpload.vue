@@ -3,16 +3,21 @@
       type="button"
       class="dropbox-upload-btn btn btn-default btn-blue ml-3"
       :class="{loading}"
-      :disabled="loading"
+      :disabled="loading || !context.resourceId"
       @click="chooser"
   >
-    <span>{{ __('Upload from Dropbox') }}</span>
+    <span>{{ !context.resourceId ? __('Dropbox uploads (available after creation)') : __('Upload from Dropbox') }}</span>
     <span>{{ __('Uploading...') }}</span>
   </button>
 </template>
 
 <script>
+import { context } from './Context'
+
 export default {
+  inject: {
+    context,
+  },
   mounted () {
     const s = document.createElement('script')
     s.setAttribute('id', 'dropboxjs')

@@ -8,17 +8,20 @@ use Illuminate\Http\JsonResponse;
 
 class DropboxUploadController
 {
+    /**
+     * @param MedialibraryRequest $request
+     * @return JsonResponse
+     */
     public function __invoke(MedialibraryRequest $request): JsonResponse
     {
         [$model, $uuid] = $request->resourceExists()
             ? [$request->findModelOrFail(), '']
             : [TransientModel::make(), $request->fieldUuid()];
 
-        $field = $request->medialibraryField();
-
         $request->validate([
             'file_name' => 'required|string',
-            'file_url' => 'required|url'
+            'file_url' => 'required|url',
+            'collection_name' => 'required|string'
         ]);
 
         if (!$file = file_get_contents($request->file_url, false)) {
@@ -27,7 +30,7 @@ class DropboxUploadController
 
         if (!$result = $model->addMediaFromString($file)
             ->usingFileName($request->file_name)
-            ->toMediaCollection('gallery')) {
+            ->toMediaCollection($request->collection_name)) {
             return response()->json(['message' => 'Failed to upload Dropbox file to server'], 502);
         }
 

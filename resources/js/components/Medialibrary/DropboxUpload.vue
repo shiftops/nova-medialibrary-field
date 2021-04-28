@@ -6,7 +6,9 @@
       :disabled="loading || !context.resourceId"
       @click="chooser"
   >
-    <span>{{ !context.resourceId ? __('Dropbox uploads (available after creation)') : __('Upload from Dropbox') }}</span>
+    <span>{{
+        !context.resourceId ? __('Dropbox uploads (available after creation)') : __('Upload from Dropbox')
+      }}</span>
     <span>{{ __('Uploading...') }}</span>
   </button>
 </template>
@@ -67,7 +69,7 @@ export default {
       })
     },
     async upload (files) {
-      const { attribute } = this.$parent.context.field
+      const { attribute, collectionName } = this.$parent.context.field
       const { resourceName, resourceId } = this.$parent.context
 
       this.loading = true
@@ -79,7 +81,8 @@ export default {
 
         const request = {
           file_name: file.name,
-          file_url: file.link
+          file_url: file.link,
+          collection_name: collectionName
         }
 
         const uploadingPromise = Nova

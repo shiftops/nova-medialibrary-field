@@ -69,7 +69,7 @@ export default {
       })
     },
     async upload (files) {
-      const { attribute, collectionName } = this.$parent.context.field
+      const { attribute, component, collectionName } = this.$parent.context.field
       const { resourceName, resourceId } = this.$parent.context
 
       this.loading = true
@@ -82,6 +82,8 @@ export default {
         const request = {
           file_name: file.name,
           file_url: file.link,
+          attribute: attribute,
+          component: component,
           collection_name: collectionName
         }
 

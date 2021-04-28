@@ -82,6 +82,8 @@ export const Provider = {
         async refresh (callback = null) {
             this.context.media.forEach(media => media.setLoading(true))
 
+            console.log(this.context)
+
             this.setMedia(await this.fetch())
 
             if (typeof callback === 'function') {

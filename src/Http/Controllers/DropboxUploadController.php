@@ -21,7 +21,9 @@ class DropboxUploadController
         $request->validate([
             'file_name' => 'required|string',
             'file_url' => 'required|url',
-            'collection_name' => 'required|string'
+            'attribute' => 'required|string',
+            'component' => 'required|string',
+            'collection_name' => 'required|string',
         ]);
 
         if (!$file = file_get_contents($request->file_url, false)) {
@@ -32,6 +34,13 @@ class DropboxUploadController
             ->usingFileName($request->file_name)
             ->toMediaCollection($request->collection_name)) {
             return response()->json(['message' => 'Failed to upload Dropbox file to server'], 502);
+        }
+
+        if ($request->component === 'nova-medialibrary-field') {
+            $result->custom_properties = [
+                'flexibleKey' => explode('__', $request->attribute)[0] ?? null
+            ];
+            $result->update();
         }
 
         return response()->json(['id' => $result->id]);

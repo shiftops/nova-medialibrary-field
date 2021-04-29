@@ -36,9 +36,13 @@ class DropboxUploadController
             return response()->json(['message' => 'Failed to upload Dropbox file to server'], 502);
         }
 
-        if ($request->component === 'nova-medialibrary-field') {
+        // Here is my dodgy way of fetching and saving the flexibleField key
+        if ($request->component === 'nova-medialibrary-field'
+            && stristr($request->attribute, '__')
+            && ($attributeParts = explode('__', $request->attribute))
+            && count($attributeParts) === 2) {
             $result->custom_properties = [
-                'flexibleKey' => explode('__', $request->attribute)[0] ?? null
+                'flexibleKey' => $attributeParts[0]
             ];
             $result->update();
         }

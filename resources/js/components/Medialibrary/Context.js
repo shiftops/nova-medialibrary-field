@@ -75,7 +75,8 @@ export const Provider = {
             return new Media(media, this.field.attribute, {
                 viaField: this.field.attribute,
                 viaResource: this.resourceName,
-                resourceId: this.resourceId
+                viaResourceId: this.resourceId,
+                resourceId: media.id
             })
         },
 

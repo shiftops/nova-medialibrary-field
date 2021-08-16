@@ -54,7 +54,7 @@ export default {
         // only be able to select files with these extensions. You may also specify
         // file types, such as "video" or "images" in the list. For more information,
         // see File types below. By default, all extensions are allowed.
-        extensions: ['images'],
+        extensions: ['.jpg', '.png'],
 
         // Optional. A value of false (default) limits selection to files,
         // while true allows the user to select both folders and files.

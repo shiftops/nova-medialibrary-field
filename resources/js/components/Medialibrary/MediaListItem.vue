@@ -1,10 +1,14 @@
 <template>
-  <div v-tooltip="tooltip" class="dragging:border-none relative border border-40 rounded overflow-hidden shadow">
+  <div v-tooltip="tooltip"
+       class="dragging:border-none relative border border-40 rounded overflow-hidden shadow relative">
+    <div class="absolute z-50 bg-success w-4 h-4" style="border-radius: 100%; top:5px; right:5px;" v-if="media.hasTags">
+      &nbsp;
+    </div>
     <MediaListItemPreview :media="media">
       <div class="dragging:hidden group-hover:block hidden absolute pin bg-overlay rounded-b">
         <div class="h-full flex justify-center items-center">
           <a :href="media.downloadUrl" target="_blank" class="media-item-download text-white">
-            <icon type="download" view-box="0 0 24 24" width="32" height="32" />
+            <icon type="download" view-box="0 0 24 24" width="32" height="32"/>
           </a>
         </div>
       </div>
@@ -17,11 +21,11 @@
     </div>
 
     <div v-if="media.loading" class="absolute pin bg-90-half flex items-center justify-center">
-      <loader class="text-white" />
+      <loader class="text-white"/>
     </div>
 
-    <MediaListItemActions :media="media" class="dragging:hidden" />
-    <MediaListItemModals :media="media" class="dragging:hidden" />
+    <MediaListItemActions :media="media" class="dragging:hidden"/>
+    <MediaListItemModals :media="media" class="dragging:hidden"/>
   </div>
 </template>
 
@@ -46,7 +50,7 @@ export default {
   },
 
   computed: {
-    tooltip() {
+    tooltip () {
       return tooltip(this.media.tooltip)
     },
   },

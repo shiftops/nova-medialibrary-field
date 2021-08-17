@@ -58,7 +58,7 @@ class MediaPresenter implements Arrayable
         return collect(
             $this->field->copyAs
         )->mapSpread(function (string $as, string $icon, callable $value) {
-            $value = (string) $value($this->media);
+            $value = (string)$value($this->media);
 
             return compact('as', 'icon', 'value');
         })->toArray();
@@ -90,6 +90,7 @@ class MediaPresenter implements Arrayable
             'authorizedToView' => $this->authorizedTo('view'),
             'authorizedToUpdate' => $this->authorizedTo('update'),
             'authorizedToDelete' => $this->authorizedTo('delete'),
+            'hasTags' => $this->media->tags()->exists()
         ], $this->cropperOptions());
     }
 
